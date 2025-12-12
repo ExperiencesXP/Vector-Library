@@ -1,65 +1,62 @@
-from math import acos,pi,sqrt
+from numbers import Real
+from math import acos,pi,sqrt,isclose
 class Vector:
-    def  __init__(self,x,y):
+    def  __init__(self,x:Real,y:Real):
         self.__x = x
         self.__y = y
-        
         
     @property
     def x(self):
         return self.__x
     
+    @x.setter
+    def(self, comp:Real):
+        self.__x = comp
     
     @property
     def y(self):
         return self.__y
     
+    @y.setter
+    def(self, comp:Real):
+        self.__y = comp
     
     def __repr__(self):
         return f"Vector({self.__x!r}, {self.__y!r})"
     
-    
     def __str__(self):
         return f"{self.__x}, {self.__y}"
-    
     
     def __add__(self,vec:'Vector'):
         return Vector((self.__x + vec.__x),(self.__y + vec.__y))
     
-    
     def __sub__(self,vec:'Vector'):
         return Vector((self.__x - vec.__x),(self.__y - vec.__y))
     
-    
-    def __mul__(self, k):
+    def __mul__(self, k:Real):
         return Vector(self.__x * k, self.__y * k)
     
-    
-    def __truediv__(self, k):
+    def __truediv__(self, k:Real):
         try:
             return self * (1/k)
         except:
             raise ValueError
-        
-        
-    def __eq__(self,vec):
-        if not isinstance(vec, Vector):
+
+    def __eq__(self,other):
+        if not isinstance(other, Vector):
             return NotImplemented
-        return self.__x == vec.__x and self.__y == vec.__y
+        return self.__x == other.__x and self.__y == other.__y
     
-    
-    def almost_equal(self,vec:'Vector',tol=1e-9):
-        if not isinstance(vec, Vector):
+    def almost_equal(self, other: 'Vector', abs_tol:float = 1e-9, rel_tol:float = 1e-9):
+        if not isinstance(other, Vector):
             return NotImplemented
-        return (abs(self.__x - vec.__x) <= tol) and (abs(self.__y - vec.__y) <= tol)
+        return (isclose(self.__x, other.__x, rel_tol=rel_tol, abs_tol=abs_tol) and isclose(self.__y, other.__y, rel_tol=rel_tol, abs_tol=abs_tol))
     
     def length(self):
         return sqrt(self.__x**2 + self.__y**2)
     
-    
     def distance(self,vec:'Vector'):
         return (self-vec).length()
-    
     
     def normalize(self):
         try:
@@ -67,16 +64,13 @@ class Vector:
         except:
             raise ValueError
         
-        
     def dotProduct(self,vec:'Vector'):
         return self.__x*vec.__x + self.__y*vec.__y
     
-    
-    def limit(self,tallimit):
+    def limit(self,tallimit:Real):
         if not self.length() > tallimit:
             return self
         return self.normalize() * tallimit
-    
     
     def angleBetween(self,vec:'Vector',useDegrees:bool=False):
         if useDegrees:
